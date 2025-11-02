@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: API Relacional - Hunter x Hunter (PostgreSQL Neon)
+  version: 1.0.0
+  description: >-
+    CRUD de personajes almacenados en PostgreSQL (Neon). Campos:
+    id, nombre, edad, altura, peso, imageurl.
+servers:
+  - url: http://localhost:8080
+    description: Servidor local (Relacional)
+
+tags:
+  - name: Personajes
+    description: CRUD sobre personajes en PostgreSQL (Neon)
+
+paths:
+  /api/personajes:
+    get:
+      tags: [Personajes]
+      summary: Obtener todos los personajes
+      responses:
+        "200":
+          description: Lista de personajes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Personaje"
+              example:
+                - id: 1
+                  nombre: "Gon Freecss"
+                  edad: 12
+                  altura: 154
+                  peso: 45
+                  imageurl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN0WnCrv6MFHYVTKzMyRpVIRu_aeEZffPaHQ&s"
+                - id: 2
+                  nombre: "Killua Zoldyck"
+                  edad: 12
+                  altura: 158
+                  peso: 49
+                  imageurl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_NiiAuGl3Az1Qy0VSW3Tnf3WHjQBVXP_dug&s"
+    post:
+      tags: [Personajes]
+      summary: Crear un nuevo personaje
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PersonajeInput"
+      responses:
+        "201":
+          description: Personaje creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Personaje"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              example: { "error": "Falta campo obligatorio" }
+
+  /api/personajes/{id}:
+    get:
+      tags: [Personajes]
+      summary: Obtener personaje por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Personaje encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Personaje"
+        "404":
+          description: Personaje no encontrado
+          content:
+            application/json:
+              example: { "error": "Personaje no encontrado" }
+    put:
+      tags: [Personajes]
+      summary: Actualizar personaje
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PersonajeInput"
+      responses:
+        "200":
+          description: Personaje actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Personaje"
+        "404":
+          description: Personaje no encontrado
+    delete:
+      tags: [Personajes]
+      summary: Eliminar personaje
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Personaje eliminado correctamente
+          content:
+            application/json:
+              example: { "message": "Personaje eliminado" }
+        "404":
+          description: Personaje no encontrado
+
+components:
+  schemas:
+    Personaje:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Gon Freecss
+        edad:
+          type: integer
+          example: 12
+        altura:
+          type: number
+          example: 154
+        peso:
+          type: number
+          example: 45
+        imageurl:
+          type: string
+          example: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN0WnCrv6MFHYVTKzMyRpVIRu_aeEZffPaHQ&s
+
+    PersonajeInput:
+      type: object
+      required:
+        - nombre
+        - edad
+        - altura
+        - peso
+        - imageurl
+      properties:
+        nombre:
+          type: string
+          example: Hisoka Morow
+        edad:
+          type: integer
+          example: 28
+        altura:
+          type: number
+          example: 187
+        peso:
+          type: number
+          example: 91
+        imageurl:
+          type: string
+          example: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS96hny0Fc8hPqcPkwnIXyyoDPvlFT6f210Kg&s
